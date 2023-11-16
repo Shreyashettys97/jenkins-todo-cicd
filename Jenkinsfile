@@ -11,7 +11,7 @@ pipeline {
     stage('setup') {
       steps {
         browserstack(credentialsId: '1784f7ca-3814-4616-b578-336344d374d5') {
-        echo "Testing with Selenium and BrowserStack Platform with Jenkins Provider"
+        echo "Testing with Selenium and BrowserStack Platform with Jenkins Provider!"
             }
         // Enable reporting in Jenkins
         browserStackReportPublisher 'automate'
