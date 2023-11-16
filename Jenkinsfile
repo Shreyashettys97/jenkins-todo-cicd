@@ -8,6 +8,17 @@ pipeline {
         sh 'docker tag my-flask-app $DOCKER_BFLASK_IMAGE'
       }
     }
+    stages {
+      stage('setup') {
+         steps {
+            browserstack(credentialsId: '1784f7ca-3814-4616-b578-336344d374d5') {
+               echo "Testing with Selenium"
+            }
+           // Enable reporting in Jenkins
+             browserStackReportPublisher 'automate'
+         }
+      }
+    }
     stage('Test') {
       steps {
         sh 'docker run my-flask-app python -m pytest app/tests/'
@@ -20,6 +31,11 @@ pipeline {
           sh 'docker push $DOCKER_BFLASK_IMAGE'
         }
       }
+    }
+  }
+  post {
+  always {      
+      emailext body: 'Check Jenkins-todo-cicd: Build Status', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'DevOps CICD Pipeline in Jenkins'
     }
   }
   post {
