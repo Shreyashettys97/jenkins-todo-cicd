@@ -33,11 +33,18 @@ pipeline {
       }
     }
   }
+
   post {
-  always {      
-      emailext body: 'Check Jenkins-todo-cicd: Build Status', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'DevOps CICD Pipeline in Jenkins'
+      always {
+          echo 'I will always say Hello again!'
+            
+          emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
+            recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+            subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+            
+        }
     }
-  }
+  
   post {
     always {
       sh 'docker logout'
