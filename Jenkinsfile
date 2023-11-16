@@ -8,17 +8,16 @@ pipeline {
         sh 'docker tag my-flask-app $DOCKER_BFLASK_IMAGE'
       }
     }
-    stages {
-      stage('setup') {
-         steps {
-            browserstack(credentialsId: '1784f7ca-3814-4616-b578-336344d374d5') {
-               echo "Testing with Selenium and BrowserStack Platform with Jenkins Provider"
+    stage('setup') {
+      steps {
+        browserstack(credentialsId: '1784f7ca-3814-4616-b578-336344d374d5') {
+        echo "Testing with Selenium and BrowserStack Platform with Jenkins Provider"
             }
-           // Enable reporting in Jenkins
-             browserStackReportPublisher 'automate'
+        // Enable reporting in Jenkins
+        browserStackReportPublisher 'automate'
          }
       }
-    }
+
     stage('Test') {
       steps {
         sh 'docker run my-flask-app python -m pytest app/tests/'
@@ -42,12 +41,8 @@ pipeline {
             recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
             subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
             
+            sh 'docker logout'
+            
         }
     }
-  
-  post {
-    always {
-      sh 'docker logout'
-    }
-  }
 }
